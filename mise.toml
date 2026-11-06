@@ -16,8 +16,8 @@ description = "GitHub workflows: syntax + shellcheck on run steps (actionlint), 
 run = ["actionlint -pyflakes= -color", "zizmor --no-progress ."]
 
 [tasks."check:shell"]
-description = "Tracked shell scripts (*.sh, .githooks/*) with the pinned shellcheck"
-run = 'files=$(git ls-files "*.sh" ".githooks/*"); [ -z "$files" ] || shellcheck $files'
+description = "Tracked shell scripts (*.sh, .githooks/*) with the pinned shellcheck; `# shellcheck source=` paths are relative to the script"
+run = 'files=$(git ls-files "*.sh" ".githooks/*"); [ -z "$files" ] || shellcheck -x -P SCRIPTDIR $files'
 
 [tasks."check:vulns"]
 description = "Known vulnerabilities in lockfiles (osv-scanner; osv-scanner.toml holds dated ignores)"
