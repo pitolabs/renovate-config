@@ -49,3 +49,10 @@ Repository-specific managers, groups and labels stay in that repository's `renov
 pass; there is no bypass, so an emergency edit goes through the GitHub UI's pull request flow too. A change here
 reaches every repository on its next Renovate run. This repository follows base-repo-standard and
 public-repo-standard (`sh scripts/setup.sh` turns on the hooks and installs the pinned tools).
+
+GitHub makes the commit when it merges a pull request, authored with your GitHub e-mail setting rather than your git
+config. Merge with your noreply address, so the public history keeps it:
+
+```bash
+gh pr merge <n> --squash --author-email "$(gh api user --jq '"\(.id)+\(.login)@users.noreply.github.com"')"
+```
