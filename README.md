@@ -45,17 +45,12 @@ Repository-specific managers, groups and labels stay in that repository's `renov
 
 ## Change it
 
-`main` takes only commits whose `validate` (Renovate's config validator) and `base` checks passed, and never a force
-push or a deletion; there is no bypass. A change here reaches every repository on its next Renovate run. This
-repository follows base-repo-standard and public-repo-standard (`sh scripts/setup.sh` turns on the hooks and installs
-the pinned tools).
+`main` takes changes only through a pull request whose `validate` (Renovate's config validator) and `base` checks
+pass, and never a direct push, a force push or a deletion; there is no bypass. A change here reaches every repository
+on its next Renovate run. This repository follows base-repo-standard and public-repo-standard (`sh scripts/setup.sh`
+turns on the hooks and installs the pinned tools).
 
-Open a pull request from a branch; once its checks pass, push that same tested commit to `main`:
-
-```bash
-git push origin <branch>:main   # fast-forward; a commit without passing checks is refused (GH013)
-```
-
-Do not merge on GitHub: it makes a new commit, authored with your GitHub e-mail setting rather than your git config,
-and with "Keep my email addresses private" off that is your primary address, in a public history. Renovate's own
-merges carry its bot identity.
+Before you merge a pull request here, turn on **Keep my email addresses private** (github.com/settings/emails).
+GitHub makes the commit when it merges (merge, squash or rebase) and records the merger with that setting, not with
+your git config: with it off, your primary address becomes the merge's author or committer, in a public history, and
+the `privacy` job refuses it from then on. Renovate's own merges carry its bot identity.
