@@ -50,7 +50,14 @@ pass, and never a direct push, a force push or a deletion; there is no bypass. A
 on its next Renovate run. This repository follows base-repo-standard and public-repo-standard (`sh scripts/setup.sh`
 turns on the hooks and installs the pinned tools).
 
-Before you merge a pull request here, turn on **Keep my email addresses private** (github.com/settings/emails).
-GitHub makes the commit when it merges (merge, squash or rebase) and records the merger with that setting, not with
-your git config: with it off, your primary address becomes the merge's author or committer, in a public history, and
-the `privacy` job refuses it from then on. Renovate's own merges carry its bot identity.
+Merge a pull request locally once its checks pass: push its tested head to `main`, a fast-forward. GitHub records the
+pull request as merged, and the commits keep the noreply identity of your git config:
+
+```bash
+git fetch origin && git push origin origin/<branch>:main   # the branch must be up to date with main
+```
+
+Do not merge on GitHub (merge, squash or rebase) until **Keep my email addresses private** is on
+(github.com/settings/emails): GitHub makes that commit and records the merger with this setting, not with your git
+config, so with it off your primary address becomes the merge's author or committer, in a public history, and the
+`privacy` job refuses it from then on. Renovate's own merges carry its bot identity.
