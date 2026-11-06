@@ -1,0 +1,51 @@
+name: ci
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  # The presets' test: Renovate's own validator, as repository config (what a preset is), unknown options refused.
+  validate:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: docker://ghcr.io/renovatebot/renovate:44.221.1@sha256:e698014d6e64a8b8e096b624120dc4aa14b1cf0e5754fd86e3c38887de63f18a
+        with:
+          args: renovate-config-validator --strict --no-global default.json automerge.json automerge-minor.json renovate.json
+  base:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # gitleaks scans every commit
+          persist-credentials: false
+      - uses: jdx/mise-action@f5be966e4a917d54244728e6a5fdcd1d93a35e6c # v5.2.6
+        with:
+          cache: false # tools are verified against mise.lock on every download; a restored cache is not
+      - run: mise run check:secrets
+      - run: mise run check:workflows
+        env:
+          GH_TOKEN: ${{ github.token }} # zizmor's online audits (known-vulnerable-actions, stale refs)
+      - run: mise run check:shell
+      - run: mise run check:vulns
+  # A backstop, not prevention: when it runs, the commits are already public (the hooks are what keep them private).
+  privacy:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # every commit, not only the last one
+          persist-credentials: false
+      - uses: jdx/mise-action@f5be966e4a917d54244728e6a5fdcd1d93a35e6c # v5.2.6
+        with:
+          cache: false # privacy-scan.sh runs the gitleaks pinned in mise.toml
+      - run: sh scripts/privacy-scan.sh --history
+        env:
+          # Repository secret: the blocklist's text (gh secret set PRIVACY_BLOCKLIST < ~/.config/privacy/blocklist.txt).
+          PRIVACY_BLOCKLIST_TEXT: ${{ secrets.PRIVACY_BLOCKLIST }}
+          # A pull request from a fork gets no secrets: scan it with gitleaks and the identity check only.
+          PRIVACY_BLOCKLIST_OPTIONAL: ${{ github.event.pull_request.head.repo.fork || false }}

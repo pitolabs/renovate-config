@@ -1,0 +1,22 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Opt-in (base-repo-standard): only when CI runs the repo's tests on pull requests.",
+  "packageRules": [
+    {
+      "description": "Patch, pin and first-time digest pins of >=1.0 dependencies merge on green CI",
+      "matchUpdateTypes": ["patch", "pin", "pinDigest"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true
+    },
+    {
+      "description": "Weekly lockfile refresh merges on green CI",
+      "matchUpdateTypes": ["lockFileMaintenance"],
+      "automerge": true
+    },
+    {
+      "description": "Majors and minors wait for a human",
+      "matchUpdateTypes": ["major", "minor"],
+      "automerge": false
+    }
+  ]
+}

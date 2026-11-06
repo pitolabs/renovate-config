@@ -1,0 +1,33 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "pitolabs default for every repository (base-repo-standard). Repo-specific managers and groups live in the repo's renovate.json; automerge is the separate :automerge / :automerge-minor preset.",
+  "extends": ["config:best-practices"],
+  "mode": "full",
+  "timezone": "Etc/UTC",
+  "dependencyDashboardTitle": "Dependency Dashboard (Renovate)",
+  "minimumReleaseAge": "12 hours",
+  "internalChecksFilter": "strict",
+  "prHourlyLimit": 0,
+  "prConcurrentLimit": 10,
+  "platformAutomerge": false,
+  "ignoreTests": false,
+  "vulnerabilityAlerts": { "labels": ["security"] },
+  "packageRules": [
+    {
+      "description": "PyPI releases wait three days, like npm (security:minimumReleaseAgeNpm in config:best-practices)",
+      "matchDatasources": ["pypi"],
+      "minimumReleaseAge": "3 days"
+    },
+    {
+      "description": "Majors wait for a human",
+      "matchUpdateTypes": ["major"],
+      "labels": ["major-update"]
+    },
+    {
+      "description": "Same tag, new digest = upstream re-pushed it: a human investigates first",
+      "matchUpdateTypes": ["digest"],
+      "automerge": false,
+      "labels": ["upstream-repush"]
+    }
+  ]
+}

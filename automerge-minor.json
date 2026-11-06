@@ -1,0 +1,12 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "Second opt-in: minors too; only where a minor cannot reach production unseen (pitorouter: upstream-guard + e2e tests)",
+  "packageRules": [
+    {
+      "description": "Minors of >=1.0 dependencies merge on green CI",
+      "matchUpdateTypes": ["minor"],
+      "matchCurrentVersion": "!/^0/",
+      "automerge": true
+    }
+  ]
+}
