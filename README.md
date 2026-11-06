@@ -45,14 +45,17 @@ Repository-specific managers, groups and labels stay in that repository's `renov
 
 ## Change it
 
-`main` takes changes only through a pull request whose `validate` (Renovate's config validator) and `base` checks
-pass; there is no bypass, so an emergency edit goes through the GitHub UI's pull request flow too. A change here
-reaches every repository on its next Renovate run. This repository follows base-repo-standard and
-public-repo-standard (`sh scripts/setup.sh` turns on the hooks and installs the pinned tools).
+`main` takes only commits whose `validate` (Renovate's config validator) and `base` checks passed, and never a force
+push or a deletion; there is no bypass. A change here reaches every repository on its next Renovate run. This
+repository follows base-repo-standard and public-repo-standard (`sh scripts/setup.sh` turns on the hooks and installs
+the pinned tools).
 
-GitHub makes the commit when it merges a pull request, authored with your GitHub e-mail setting rather than your git
-config. Merge with your noreply address, so the public history keeps it:
+Open a pull request from a branch; once its checks pass, push that same tested commit to `main`:
 
 ```bash
-gh pr merge <n> --squash --author-email "$(gh api user --jq '"\(.id)+\(.login)@users.noreply.github.com"')"
+git push origin <branch>:main   # fast-forward; a commit without passing checks is refused (GH013)
 ```
+
+Do not merge on GitHub: it makes a new commit, authored with your GitHub e-mail setting rather than your git config,
+and with "Keep my email addresses private" off that is your primary address, in a public history. Renovate's own
+merges carry its bot identity.
