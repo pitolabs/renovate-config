@@ -30,7 +30,7 @@ because a public repository cannot read a private preset.
   merge either (Renovate's default keeps bringing them up to date, so every push to `main` re-ran CI on every open
   automerge PR; in November 2026 that was over half the CI minutes of the private repositories, which pay for
   Actions). Two days, because Renovate merges one PR per run and the next PR must then be brought up to date and pass
-  CI before it merges. To act on a PR on another day, tick its rebase checkbox or the Dependency Dashboard's.
+  CI before it merges. Outside the window, only a PR's own rebase checkbox makes Renovate update and merge that PR.
 - **Majors** are labelled `major-update` and wait for a human.
 - **Digest updates** (same tag, new content: the upstream re-pushed it) are labelled `upstream-repush` and never
   automerge: in March 2026, `trivy-action`'s tags were re-pushed to other commits.
