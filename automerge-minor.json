@@ -3,10 +3,11 @@
   "description": "Second opt-in: minors too; only where a minor cannot reach production unseen (pitorouter: upstream-guard + e2e tests)",
   "packageRules": [
     {
-      "description": "Minors of >=1.0 dependencies merge on green CI",
+      "description": "Minors of >=1.0 dependencies merge on green CI, in the same PR as the patches (:automerge)",
       "matchUpdateTypes": ["minor"],
       "matchCurrentVersion": "!/^0/",
-      "automerge": true
+      "automerge": true,
+      "groupName": "automerged updates"
     }
   ]
 }

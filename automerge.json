@@ -3,10 +3,11 @@
   "description": "Opt-in (base-repo-standard): only when CI runs the repo's tests on pull requests.",
   "packageRules": [
     {
-      "description": "Patch, pin and first-time digest pins of >=1.0 dependencies merge on green CI",
+      "description": "Patch, pin and first-time digest pins of >=1.0 dependencies merge on green CI, all in one PR per repository (every PR costs CI runs)",
       "matchUpdateTypes": ["patch", "pin", "pinDigest"],
       "matchCurrentVersion": "!/^0/",
-      "automerge": true
+      "automerge": true,
+      "groupName": "automerged updates"
     },
     {
       "description": "Weekly lockfile refresh merges on green CI",
