@@ -1,6 +1,6 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "pitolabs default for every repository (base-repo-standard). Repo-specific managers and groups live in the repo's renovate.json; automerge is the separate :automerge / :automerge-minor preset.",
+  "description": "pitolabs default for every repository (base-repo-standard). Repo-specific managers and groups live in the repo's renovate.json; automerge is the separate :automerge preset.",
   "extends": ["config:best-practices"],
   "mode": "full",
   "timezone": "Etc/UTC",
@@ -27,10 +27,21 @@
       "labels": ["major-update"]
     },
     {
-      "description": "Same tag, new digest = upstream re-pushed it: a human investigates first",
+      "description": "Same tag, new digest of an action or a release asset = upstream re-pushed it, as attackers did with trivy-action's tags in March 2026: a human investigates first. Docker images are rebuilt under the same tag for base-image patches as a matter of course, so their digest updates are routine and :automerge takes them",
       "matchUpdateTypes": ["digest"],
+      "matchDatasources": ["!docker"],
       "automerge": false,
       "labels": ["upstream-repush"]
+    },
+    {
+      "description": "Digest updates and lockfile refreshes carry no release timestamp at the branch stage: with the default timestamp-required, renovate/stability-days stays pending for ever and nothing merges (renovatebot/renovate#45236). The digest's age is still checked at lookup (the tag's push time); a lockfile refresh cannot be aged at all",
+      "matchUpdateTypes": ["digest", "pinDigest", "lockFileMaintenance"],
+      "minimumReleaseAgeBehaviour": "timestamp-optional"
+    },
+    {
+      "description": "No age gate on the lockfile refresh: Renovate has no timestamps for what it pulls in, so any age leaves the PR pending (renovatebot/renovate discussion #47061)",
+      "matchUpdateTypes": ["lockFileMaintenance"],
+      "minimumReleaseAge": null
     }
   ]
 }

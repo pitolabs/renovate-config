@@ -1,11 +1,17 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "description": "Opt-in (base-repo-standard): only when CI runs the repo's tests on pull requests.",
+  "description": "Part of the standard (base-repo-standard): only where CI runs the repo's tests on pull requests.",
   "packageRules": [
     {
-      "description": "Patch, pin and first-time digest pins of >=1.0 dependencies merge on green CI, all in one PR per repository (every PR costs CI runs)",
-      "matchUpdateTypes": ["patch", "pin", "pinDigest"],
-      "matchCurrentVersion": "!/^0/",
+      "description": "Minor, patch, pin and digest-pin updates merge on green CI, 0.x dependencies like any other, all in one PR per repository (every PR costs CI runs)",
+      "matchUpdateTypes": ["minor", "patch", "pin", "pinDigest"],
+      "automerge": true,
+      "groupName": "automerged updates"
+    },
+    {
+      "description": "Docker digest updates (same tag, rebuilt image) merge on green CI in the same PR; other digests wait for a human (default.json, upstream-repush)",
+      "matchUpdateTypes": ["digest"],
+      "matchDatasources": ["docker"],
       "automerge": true,
       "groupName": "automerged updates"
     },
@@ -15,8 +21,8 @@
       "automerge": true
     },
     {
-      "description": "Majors and minors wait for a human",
-      "matchUpdateTypes": ["major", "minor"],
+      "description": "Majors wait for a human",
+      "matchUpdateTypes": ["major"],
       "automerge": false
     }
   ]
