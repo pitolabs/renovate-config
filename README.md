@@ -46,10 +46,11 @@ because a public repository cannot read a private preset.
   at once, outside the schedule and hourly limit.
 - `prHourlyLimit: 0` (the default of 2 held PRs back for hours), `platformAutomerge: false` and `ignoreTests: false`:
   Renovate itself merges, only after the checks pass. It merges one PR per branch per run; the Mend-hosted app runs
-  every few hours, but only once a day in a repository where no Renovate PR has ever been merged
-  ([Mend's job scheduling](https://docs.renovatebot.com/mend-hosted/job-scheduling/)), too seldom to merge anything in
-  the window. In a new repository, merge the first Renovate PR by hand once its CI is green. To run Renovate now, tick
-  the checkbox at the bottom of the Dependency Dashboard issue.
+  every few hours, and only once a day in a repository where no Renovate PR has ever been merged
+  ([Mend's job scheduling](https://docs.renovatebot.com/mend-hosted/job-scheduling/)). A Monday run can still open a PR
+  and a later one merge it inside the window; if a new repository's PRs keep missing the window, merge one green
+  Renovate PR by hand and Mend moves it to the faster schedule. To run Renovate now, tick the checkbox at the bottom of
+  the Dependency Dashboard issue.
 - `mode: full` takes the repository out of Mend's Silent mode (the default when the app is installed for all
   repositories). If no Dependency Dashboard issue appears after two runs, turn it off by hand: developer.mend.io → the
   repository → Settings → Dependencies → Silent mode off, Automated PRs on.
