@@ -28,12 +28,15 @@ because a public repository cannot read a private preset.
   CI run, and another each time it is brought up to date with `main`. A group automerges only when every update in it
   does and its CI is green, so one update that breaks the build holds the whole group until someone fixes or excludes
   it; a repository's own `groupName` rules (later in its `renovate.json`) win.
-- **Monday and Tuesday only (UTC)**: `schedule` and `lockFileMaintenance.schedule` are `* * * * 1-2`, and
+- **Monday to Wednesday only (UTC)**: `schedule` and `lockFileMaintenance.schedule` are `* * * * 1-3`, and
   `updateNotScheduled: false` makes Renovate leave open PRs alone on the other days: no update with `main`, and no
   merge either (Renovate's default keeps bringing them up to date, so every push to `main` re-ran CI on every open
   automerge PR; in November 2026 that was over half the CI minutes of the private repositories, which pay for
-  Actions). Two days, because Renovate merges one PR per run and the next PR must then be brought up to date and pass
-  CI before it merges. Outside the window, only a PR's own rebase checkbox makes Renovate update and merge that PR.
+  Actions). Three days, because a PR needs two runs inside the window (one opens it or brings it up to date with
+  `main`, a later one merges it once CI is green); Renovate merges one PR per run, after which the next one must be
+  brought up to date and pass CI again; and the Mend-hosted app runs only every 5 to 13 hours in practice. With two
+  days (until November 2026), PRs opened or rebased on Tuesday evening went green within minutes and then waited until
+  the next Monday. Outside the window, only a PR's own rebase checkbox makes Renovate update and merge that PR.
 - **Majors** are labelled `major-update` and wait for a human.
 - **Digest updates** (same tag, new content) of **Docker images** merge with the rest: official images are rebuilt
   under the same tag for base-image patches all the time. Of anything else (actions, release assets) they mean the
@@ -43,7 +46,10 @@ because a public repository cannot read a private preset.
   at once, outside the schedule and hourly limit.
 - `prHourlyLimit: 0` (the default of 2 held PRs back for hours), `platformAutomerge: false` and `ignoreTests: false`:
   Renovate itself merges, only after the checks pass. It merges one PR per branch per run; the Mend-hosted app runs
-  every few hours. To run it now, tick the checkbox at the bottom of the Dependency Dashboard issue.
+  every few hours, but only once a day in a repository where no Renovate PR has ever been merged
+  ([Mend's job scheduling](https://docs.renovatebot.com/mend-hosted/job-scheduling/)), too seldom to merge anything in
+  the window. In a new repository, merge the first Renovate PR by hand once its CI is green. To run Renovate now, tick
+  the checkbox at the bottom of the Dependency Dashboard issue.
 - `mode: full` takes the repository out of Mend's Silent mode (the default when the app is installed for all
   repositories). If no Dependency Dashboard issue appears after two runs, turn it off by hand: developer.mend.io → the
   repository → Settings → Dependencies → Silent mode off, Automated PRs on.
